@@ -1,4 +1,13 @@
 package com.db.naruto.domain.dto;
 
-public record PersonagemResponse() {
+import java.util.List;
+
+public record PersonagemResponse(
+        Long id,
+        String nome,
+        int idade,
+        String aldeia,
+        List<String> jutsus,
+        int chakra
+) {
 }
