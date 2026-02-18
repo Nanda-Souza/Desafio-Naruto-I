@@ -9,7 +9,7 @@ public record PersonagemRequest(
         @NotBlank(message = "O Nome do Ninja é obrigatório!")
         String nome,
 
-        @Min(value = 1, message = "Um ninja deve ter no mínimo 7 anos!")
+        @Min(value = 7, message = "Um ninja deve ter no mínimo 7 anos!")
         int idade,
 
         @NotBlank(message = "O Nome da Aldeia é obrigatório!")
