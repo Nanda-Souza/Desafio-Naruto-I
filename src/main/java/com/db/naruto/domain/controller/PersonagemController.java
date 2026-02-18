@@ -37,4 +37,11 @@ public class PersonagemController {
         return ResponseEntity.ok(personagemService.salvarNinjaDeTaijutsu(personagemRequest));
     }
 
+    @PostMapping("/ninja_de_genjutsu")
+    public ResponseEntity<PersonagemResponse> salvarNinjaDeGejutsu(
+            @RequestBody @Valid PersonagemRequest personagemRequest
+    ){
+        return ResponseEntity.ok(personagemService.salvarNinjaDeGenjutsu(personagemRequest));
+    }
+
 }

@@ -3,6 +3,7 @@ package com.db.naruto.domain.service;
 
 import com.db.naruto.domain.dto.PersonagemRequest;
 import com.db.naruto.domain.dto.PersonagemResponse;
+import com.db.naruto.domain.entity.NinjaDeGenjutsu;
 import com.db.naruto.domain.entity.NinjaDeNinjutsu;
 import com.db.naruto.domain.entity.NinjaDeTaijutsu;
 import com.db.naruto.domain.repository.PersonagemRepository;
@@ -64,6 +65,28 @@ public class PersonagemService {
         );
 
         NinjaDeTaijutsu ninjaSalvo = personagemRepository.save(ninja);
+
+        return new PersonagemResponse(
+                ninjaSalvo.getId(),
+                ninjaSalvo.getNome(),
+                ninjaSalvo.getIdade(),
+                ninjaSalvo.getAldeia(),
+                ninjaSalvo.getJutsus(),
+                ninjaSalvo.getChakra()
+        );
+    }
+
+    public PersonagemResponse salvarNinjaDeGenjutsu(PersonagemRequest personagemRequest){
+
+        NinjaDeGenjutsu ninja = new NinjaDeGenjutsu(
+                personagemRequest.nome(),
+                personagemRequest.idade(),
+                personagemRequest.aldeia(),
+                personagemRequest.jutsus(),
+                personagemRequest.chakra()
+        );
+
+        NinjaDeGenjutsu ninjaSalvo = personagemRepository.save(ninja);
 
         return new PersonagemResponse(
                 ninjaSalvo.getId(),
