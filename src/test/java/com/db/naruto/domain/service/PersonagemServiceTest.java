@@ -5,6 +5,7 @@ import com.db.naruto.domain.dto.PersonagemResponse;
 import com.db.naruto.domain.entity.NinjaDeGenjutsu;
 import com.db.naruto.domain.entity.NinjaDeNinjutsu;
 import com.db.naruto.domain.entity.NinjaDeTaijutsu;
+import com.db.naruto.domain.entity.Personagem;
 import com.db.naruto.domain.repository.PersonagemRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,9 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -183,6 +184,54 @@ public class PersonagemServiceTest {
         assertEquals("Ino Yamanaka", terceiroPersonagem.nome(), "Deve retornar Ino Yamanak!");
 
         verify(personagemRepository, times(1)).findAll();
+
+    }
+
+    @Test
+    @DisplayName("Deve deletar um personagem com sucesso!")
+    void deveDeletarPersonagemComSucesso(){
+
+        Long id = 1L;
+
+        List<String> jutsus = new ArrayList<>();
+        jutsus.add("Clone Das Sombras");
+
+        Personagem personagem = new Personagem(
+                "Naruto",
+                12,
+                "Konoha",
+                jutsus,
+                50
+        );
+
+        when(personagemRepository.findById(id))
+                .thenReturn(Optional.of(personagem));
+
+        personagemService.deletarPersonagem(id);
+
+        verify(personagemRepository).findById(id);
+        verify(personagemRepository).delete(personagem);
+
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao tentar deletar um personagem inexistente!")
+    void deveLancarExcecaoAoDeletarPersonagemInexistente(){
+
+        Long id = 1L;
+
+        when(personagemRepository.findById(id))
+                .thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> personagemService.deletarPersonagem(id)
+        );
+
+        assertEquals("Personagem com Id 1 não foi encontrado!", exception.getMessage(), "Deve retornar personagem com Id 1 não foi encontrado!");
+
+        verify(personagemRepository).findById(id);
+        verify(personagemRepository, never()).delete(any());
 
     }
 
