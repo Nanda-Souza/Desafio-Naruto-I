@@ -2,6 +2,7 @@ package com.db.naruto.domain.service;
 
 import com.db.naruto.domain.dto.PersonagemRequest;
 import com.db.naruto.domain.dto.PersonagemResponse;
+import com.db.naruto.domain.dto.PersonagemUpdateRequest;
 import com.db.naruto.domain.entity.NinjaDeGenjutsu;
 import com.db.naruto.domain.entity.NinjaDeNinjutsu;
 import com.db.naruto.domain.entity.NinjaDeTaijutsu;
@@ -234,5 +235,79 @@ public class PersonagemServiceTest {
         verify(personagemRepository, never()).delete(any());
 
     }
+
+    @Test
+    @DisplayName("Deve atualizar o personagem com sucesso!")
+    void deveAtualizarPersonagemComSucesso(){
+
+        Long id = 1L;
+
+        List<String> jutsus = new ArrayList<>();
+        jutsus.add("Clone Das Sombras");
+
+        Personagem personagem = new Personagem(
+                "Naruto",
+                12,
+                "Konoha",
+                jutsus,
+                50
+        );
+
+        PersonagemUpdateRequest updateRequest = new PersonagemUpdateRequest(
+                "Naruto Uzumaki",
+                0,
+                null,
+                null,
+                0
+        );
+
+        when(personagemRepository.findById(id))
+                .thenReturn(Optional.of(personagem));
+
+        when(personagemRepository.save(any(Personagem.class)))
+                .thenAnswer(i -> i.getArgument(0));
+
+        PersonagemResponse response = personagemService.atualizarPersonagem(id, updateRequest);
+
+        assertNotNull(response, "O retorno não pode ser nulo!");
+        assertEquals("Naruto Uzumaki", response.nome(), "Deve retornar Naruto Uzumaki!");
+
+        verify(personagemRepository).findById(id);
+        verify(personagemRepository).save(any(Personagem.class));
+
+
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção ao tentar atualizar um personagem com inexistente!")
+    void deveLancarExcecaoAoAtualizarPersonagemInexistente(){
+
+        Long id = 1L;
+
+        PersonagemUpdateRequest updateRequest = new PersonagemUpdateRequest(
+                "Naruto Uzumaki",
+                0,
+                null,
+                null,
+                0
+        );
+
+        when(personagemRepository.findById(id))
+                .thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> personagemService.atualizarPersonagem(id, updateRequest)
+        );
+
+        assertEquals("Personagem com Id 1 não foi encontrado!",exception.getMessage(), "Deve retornar personagem com o id 1 não foi encontrado!");
+
+        verify(personagemRepository).findById(id);
+        verify(personagemRepository, never()).save(any());
+
+
+    }
+
+
 
 }
