@@ -2,6 +2,7 @@ package com.db.naruto.domain.service;
 
 import com.db.naruto.domain.dto.PersonagemRequest;
 import com.db.naruto.domain.dto.PersonagemResponse;
+import com.db.naruto.domain.entity.NinjaDeGenjutsu;
 import com.db.naruto.domain.entity.NinjaDeNinjutsu;
 import com.db.naruto.domain.entity.NinjaDeTaijutsu;
 import com.db.naruto.domain.repository.PersonagemRepository;
@@ -18,7 +19,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PersonagemServiceTest {
@@ -93,4 +94,96 @@ public class PersonagemServiceTest {
         assertEquals("Rock Lee", response.nome(), "Deve retornar Rock Lee!");
 
     }
+
+    @Test
+    @DisplayName("Deve salvar e retornar o Ninja de Genjutsu com sucesso!")
+    void deveSalvarNinjaDeGenjutsuComSucesso(){
+
+        List<String> jutsus = new ArrayList<>();
+        jutsus.add("Técnica de Transferência de Mente");
+
+        PersonagemRequest request = new PersonagemRequest(
+                "Ino Yamanaka",
+                12,
+                "Konoha",
+                jutsus,
+                60
+        );
+
+        NinjaDeGenjutsu ninjaSalvo = new NinjaDeGenjutsu(
+                request.nome(),
+                request.idade(),
+                request.aldeia(),
+                request.jutsus(),
+                request.idade()
+        );
+
+        when(personagemRepository.save(any(NinjaDeGenjutsu.class)))
+                .thenReturn(ninjaSalvo);
+
+        PersonagemResponse response = personagemService.salvarNinjaDeGenjutsu(request);
+
+        assertNotNull(response, "O retorno não pode ser nulo!");
+        assertEquals("Ino Yamanaka", response.nome(), "Deve retornar Ino Yamanaka!");
+
+    }
+
+    @Test
+    @DisplayName("Deve listar todos os personagens cadastrados!")
+    void deveListarTodosOsPersonagensCadastrados(){
+
+        List<String> jutsusSasuke = new ArrayList<>();
+        jutsusSasuke.add("Técnica do Dragão de Fogo");
+
+        NinjaDeNinjutsu sasuke = new NinjaDeNinjutsu(
+                "Sasuke Uchiha",
+                12,
+                "Konoha",
+                jutsusSasuke,
+                75
+        );
+
+        List<String> jutsusRockLee = new ArrayList<>();
+        jutsusRockLee.add("Furacão da Folha");
+
+        NinjaDeTaijutsu rockLee = new NinjaDeTaijutsu(
+                "Rock Lee",
+                12,
+                "Konoha",
+                jutsusRockLee,
+                20
+        );
+
+        List<String> jutsusInoYamanaka = new ArrayList<>();
+        jutsusInoYamanaka.add("Técnica de Transferência de Mente");
+
+        NinjaDeGenjutsu inoYamanaka = new NinjaDeGenjutsu(
+                "Ino Yamanaka",
+                12,
+                "Konoha",
+                jutsusInoYamanaka,
+                60
+        );
+
+        when(personagemRepository.findAll())
+                .thenReturn(List.of(sasuke, rockLee, inoYamanaka));
+
+        List<PersonagemResponse> response = personagemService.listarPersonagens();
+
+        assertNotNull(response, "O retorno não pode ser nulo!");
+        assertEquals(3, response.size(), "Deve retornar uma lista com três personagens!");
+
+        PersonagemResponse primeiroPersonagem = response.get(0);
+        assertEquals("Sasuke Uchiha", primeiroPersonagem.nome(), "Deve retornar Sasuke Uchiha!");
+
+        PersonagemResponse segundoPersonagem = response.get(1);
+        assertEquals("Rock Lee", segundoPersonagem.nome(), "Deve retornar Rock Lee!");
+
+        PersonagemResponse terceiroPersonagem = response.get(2);
+        assertEquals("Ino Yamanaka", terceiroPersonagem.nome(), "Deve retornar Ino Yamanak!");
+
+        verify(personagemRepository, times(1)).findAll();
+
+    }
+
 }
