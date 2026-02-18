@@ -4,6 +4,7 @@ package com.db.naruto.domain.service;
 import com.db.naruto.domain.dto.PersonagemRequest;
 import com.db.naruto.domain.dto.PersonagemResponse;
 import com.db.naruto.domain.entity.NinjaDeNinjutsu;
+import com.db.naruto.domain.entity.NinjaDeTaijutsu;
 import com.db.naruto.domain.repository.PersonagemRepository;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +52,29 @@ public class PersonagemService {
                 ninjaSalvo.getChakra()
         );
     }
+
+    public PersonagemResponse salvarNinjaDeTaijutsu(PersonagemRequest personagemRequest){
+
+        NinjaDeTaijutsu ninja = new NinjaDeTaijutsu(
+                personagemRequest.nome(),
+                personagemRequest.idade(),
+                personagemRequest.aldeia(),
+                personagemRequest.jutsus(),
+                personagemRequest.chakra()
+        );
+
+        NinjaDeTaijutsu ninjaSalvo = personagemRepository.save(ninja);
+
+        return new PersonagemResponse(
+                ninjaSalvo.getId(),
+                ninjaSalvo.getNome(),
+                ninjaSalvo.getIdade(),
+                ninjaSalvo.getAldeia(),
+                ninjaSalvo.getJutsus(),
+                ninjaSalvo.getChakra()
+        );
+    }
+
 
 
 }
