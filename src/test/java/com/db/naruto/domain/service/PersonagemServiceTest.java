@@ -3,6 +3,7 @@ package com.db.naruto.domain.service;
 import com.db.naruto.domain.dto.PersonagemRequest;
 import com.db.naruto.domain.dto.PersonagemResponse;
 import com.db.naruto.domain.entity.NinjaDeNinjutsu;
+import com.db.naruto.domain.entity.NinjaDeTaijutsu;
 import com.db.naruto.domain.repository.PersonagemRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,6 +58,39 @@ public class PersonagemServiceTest {
 
         assertNotNull(response, "O retorno não pode ser nulo!");
         assertEquals("Sasuke Uchiha", response.nome(), "Deve retornar Sasuke Uchiha!");
+
+    }
+
+    @Test
+    @DisplayName("Deve salvar e retornar o Ninja de Taijutsu com sucesso!")
+    void deveSalvarNinjaDeTaijutsuComSucesso(){
+
+        List<String> jutsus = new ArrayList<>();
+        jutsus.add("Furacão da Folha");
+
+        PersonagemRequest request = new PersonagemRequest(
+                "Rock Lee",
+                12,
+                "Konoha",
+                jutsus,
+                20
+        );
+
+        NinjaDeTaijutsu ninjaSalvo = new NinjaDeTaijutsu(
+                request.nome(),
+                request.idade(),
+                request.aldeia(),
+                request.jutsus(),
+                request.idade()
+        );
+
+        when(personagemRepository.save(any(NinjaDeTaijutsu.class)))
+                .thenReturn(ninjaSalvo);
+
+        PersonagemResponse response = personagemService.salvarNinjaDeTaijutsu(request);
+
+        assertNotNull(response, "O retorno não pode ser nulo!");
+        assertEquals("Rock Lee", response.nome(), "Deve retornar Rock Lee!");
 
     }
 }
