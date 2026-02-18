@@ -44,4 +44,12 @@ public class PersonagemController {
         return ResponseEntity.ok(personagemService.salvarNinjaDeGenjutsu(personagemRequest));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarPersonagem(
+            @PathVariable Long id
+    ) {
+        personagemService.deletarPersonagem(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

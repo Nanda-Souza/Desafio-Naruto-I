@@ -6,6 +6,7 @@ import com.db.naruto.domain.dto.PersonagemResponse;
 import com.db.naruto.domain.entity.NinjaDeGenjutsu;
 import com.db.naruto.domain.entity.NinjaDeNinjutsu;
 import com.db.naruto.domain.entity.NinjaDeTaijutsu;
+import com.db.naruto.domain.entity.Personagem;
 import com.db.naruto.domain.repository.PersonagemRepository;
 import org.springframework.stereotype.Service;
 
@@ -96,6 +97,16 @@ public class PersonagemService {
                 ninjaSalvo.getJutsus(),
                 ninjaSalvo.getChakra()
         );
+    }
+
+    public void deletarPersonagem(Long id){
+
+        Personagem personagem = personagemRepository.findById(id)
+                .orElseThrow(()->
+                        new RuntimeException("Personagem com Id " + id + " não foi encontrado!"));
+
+        personagemRepository.delete(personagem);
+
     }
 
 
