@@ -1,0 +1,100 @@
+package com.db.naruto.domain.service;
+
+
+
+import com.db.naruto.domain.repository.PersonagemRepository;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@AutoConfigureJsonTesters
+@Transactional
+
+public class PersonagemIntegrationTest {
+    @Autowired
+    MockMvc mockMvc;
+
+    @Autowired
+    PersonagemRepository personagemRepository;
+
+
+    @Test
+    @DisplayName("Deve salvar e retornar o Ninja de Ninjutsu com sucesso!")
+    void deveCriarNinjaDeNinjutsuComSucesso() throws Exception {
+        String json = """
+            {
+              "nome": "Sakura Haruno",
+              "idade": 12,
+              "aldeia": "Konoha",
+              "jutsus": ["Contra-Genjutsu"],
+              "chakra": 65
+            }
+            """;
+
+        mockMvc.perform(post("/personagem/ninja_de_ninjutsu")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.nome").value("Sakura Haruno"));
+    }
+
+    @Test
+    @DisplayName("Deve salvar e retornar o Ninja de Genjutsu com sucesso!")
+    void deveCriarNinjaDeGenjutsuComSucesso() throws Exception {
+        String json = """
+            {
+              "nome": "Shikamaru Nara",
+              "idade": 12,
+              "aldeia": "Konoha",
+              "jutsus": ["Método das Sombras"],
+              "chakra": 65
+            }
+            """;
+
+        mockMvc.perform(post("/personagem/ninja_de_genjutsu")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.nome").value("Shikamaru Nara"));
+
+    }
+
+    @Test
+    @DisplayName("Deve salvar e retornar o Ninja de Taijutsu com sucesso!")
+    void deveCriarNinjaDeTaijutsuComSucesso() throws Exception {
+        String json = """
+            {
+              "nome": "Neji Hyuuga",
+              "idade": 12,
+              "aldeia": "Konoha",
+              "jutsus": ["Oito Trigramas: Sessenta e Quatro Palmas"],
+              "chakra": 45
+            }
+            """;
+
+        mockMvc.perform(post("/personagem/ninja_de_taijutsu")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.nome").value("Neji Hyuuga"));
+
+    }
+
+
+
+
+}
