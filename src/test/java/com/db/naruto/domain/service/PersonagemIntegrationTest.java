@@ -188,6 +188,44 @@ public class PersonagemIntegrationTest {
                 .andExpect(status().is4xxClientError());
     }
 
+    @Test
+    @DisplayName("Deve atualizar o nome do personagem com sucesso!")
+    void deveAtualizarPersonagemComSucesso() throws Exception {
+
+        String json = """
+            {
+              "nome": "Sakura",
+              "idade": 12,
+              "aldeia": "Konoha",
+              "jutsus": ["Contra-Genjutsu"],
+              "chakra": 65
+            }
+            """;
+
+        String response = mockMvc.perform(post("/personagem/ninja_de_ninjutsu")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Number idNumber = JsonPath.read(response, "$.id");
+        Long id = idNumber.longValue();
+
+        String jsonUpdate = """
+        {
+          "nome": "Sakura Haruno"
+        }
+        """;
+
+        mockMvc.perform(put("/personagem/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonUpdate))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nome").value("Sakura Haruno"));
+    }
+
 
 
 
