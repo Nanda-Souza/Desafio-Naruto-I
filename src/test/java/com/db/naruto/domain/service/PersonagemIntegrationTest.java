@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 @AutoConfigureJsonTesters
 @Transactional
 
@@ -141,13 +143,13 @@ public class PersonagemIntegrationTest {
 
         mockMvc.perform(post("/personagem/ninja_de_taijutsu")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(json2))
+                        .content(json3))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/personagem"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$.length()").value(3))
                 .andExpect(jsonPath("$[0].nome").value("Sakura Haruno"))
                 .andExpect(jsonPath("$[1].nome").value("Shikamaru Nara"))
                 .andExpect(jsonPath("$[2].nome").value("Neji Hyuuga"));
