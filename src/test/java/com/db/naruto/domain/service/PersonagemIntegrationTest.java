@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -92,6 +93,64 @@ public class PersonagemIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.nome").value("Neji Hyuuga"));
 
+    }
+
+    @Test
+    @DisplayName("Deve listar todos os personagens cadastrados")
+    void deveListarPersonagensComSucesso() throws Exception {
+
+        String json1 = """
+            {
+              "nome": "Sakura Haruno",
+              "idade": 12,
+              "aldeia": "Konoha",
+              "jutsus": ["Contra-Genjutsu"],
+              "chakra": 65
+            }
+            """;
+
+        String json2 = """
+            {
+              "nome": "Shikamaru Nara",
+              "idade": 12,
+              "aldeia": "Konoha",
+              "jutsus": ["Método das Sombras"],
+              "chakra": 65
+            }
+            """;
+
+        String json3 = """
+            {
+              "nome": "Neji Hyuuga",
+              "idade": 12,
+              "aldeia": "Konoha",
+              "jutsus": ["Oito Trigramas: Sessenta e Quatro Palmas"],
+              "chakra": 45
+            }
+            """;
+
+        mockMvc.perform(post("/personagem/ninja_de_ninjutsu")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json1))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/personagem/ninja_de_genjutsu")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json2))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/personagem/ninja_de_taijutsu")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json2))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/personagem"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].nome").value("Sakura Haruno"))
+                .andExpect(jsonPath("$[1].nome").value("Shikamaru Nara"))
+                .andExpect(jsonPath("$[2].nome").value("Neji Hyuuga"));
     }
 
 
