@@ -3,6 +3,7 @@ package com.db.naruto.domain.service;
 
 
 import com.db.naruto.domain.repository.PersonagemRepository;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -98,7 +98,7 @@ public class PersonagemIntegrationTest {
     }
 
     @Test
-    @DisplayName("Deve listar todos os personagens cadastrados")
+    @DisplayName("Deve listar todos os personagens cadastrados!")
     void deveListarPersonagensComSucesso() throws Exception {
 
         String json1 = """
@@ -153,6 +153,39 @@ public class PersonagemIntegrationTest {
                 .andExpect(jsonPath("$[0].nome").value("Sakura Haruno"))
                 .andExpect(jsonPath("$[1].nome").value("Shikamaru Nara"))
                 .andExpect(jsonPath("$[2].nome").value("Neji Hyuuga"));
+    }
+
+    @Test
+    @DisplayName("Deve deletar personagem com sucesso!")
+    void deveDeletarPersonagemComSucesso() throws Exception {
+
+        String json = """
+            {
+              "nome": "Sakura Haruno",
+              "idade": 12,
+              "aldeia": "Konoha",
+              "jutsus": ["Contra-Genjutsu"],
+              "chakra": 65
+            }
+            """;
+
+        String response = mockMvc.perform(post("/personagem/ninja_de_ninjutsu")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        Number idNumber = JsonPath.read(response, "$.id");
+        Long id = idNumber.longValue();
+
+        mockMvc.perform(delete("/personagem/{id}", id))
+                .andExpect(status().isNoContent());
+
+
+        mockMvc.perform(get("/personagem/{id}", id))
+                .andExpect(status().is4xxClientError());
     }
 
 
