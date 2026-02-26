@@ -9,7 +9,9 @@ import com.db.naruto.domain.entity.NinjaDeNinjutsu;
 import com.db.naruto.domain.entity.NinjaDeTaijutsu;
 import com.db.naruto.domain.entity.Personagem;
 import com.db.naruto.domain.repository.PersonagemRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -103,8 +105,10 @@ public class PersonagemService {
     public void deletarPersonagem(Long id){
 
         Personagem personagem = personagemRepository.findById(id)
-                .orElseThrow(()->
-                        new RuntimeException("Personagem com Id " + id + " não foi encontrado!"));
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Personagem com Id " + id + " não foi encontrado!")
+                );
 
         personagemRepository.delete(personagem);
 
@@ -113,47 +117,32 @@ public class PersonagemService {
     public PersonagemResponse atualizarPersonagem(Long id, PersonagemUpdateRequest personagemUpdate){
 
         Personagem personagem = personagemRepository.findById(id)
-                .orElseThrow(()->
-                        new RuntimeException("Personagem com Id " + id + " não foi encontrado!"));
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Personagem com Id " + id + " não foi encontrado!")
+                );
 
         if (personagemUpdate.nome() != null){
-            if(personagemUpdate.nome().isBlank()){
-                throw new IllegalArgumentException("O nome do ninja não pode ser vazio!");
-            }
-            personagem.setNome(personagemUpdate.nome());
-
+            personagem.setNome(personagemUpdate.nome().trim());
         }
 
         Integer idadeNinja = personagemUpdate.idade();
-        if (idadeNinja != 0){
-            if(idadeNinja < 7){
-                throw new IllegalArgumentException("Um ninja deve ter no mínimo 7 anos!");
-            }
+        if (idadeNinja != null){
             personagem.setIdade(idadeNinja);
         }
 
         if (personagemUpdate.aldeia() != null){
-            if(personagemUpdate.aldeia().isBlank()){
-                throw new IllegalArgumentException("O nome da aldeia do ninja não pode ser vazia!");
-
-            }
-
-            personagem.setAldeia(personagemUpdate.aldeia());
+            personagem.setAldeia(personagemUpdate.aldeia().trim());
         }
 
         if  (personagemUpdate.jutsus() != null){
-            if(personagemUpdate.jutsus().isEmpty()){
-                throw new IllegalArgumentException("O ninja deve possuir ao menos um jutsu!");
-            }
-
             personagem.setJutsus(personagemUpdate.jutsus());
         }
 
+
+
         Integer chakraNinja = personagemUpdate.chakra();
-        if (chakraNinja != 0){
-            if(chakraNinja < 1){
-                throw new IllegalArgumentException("O chakra do ninja deve ser maior que zero!");
-            }
+        if (chakraNinja != null){
             personagem.setChakra(chakraNinja);
         }
 
@@ -168,6 +157,23 @@ public class PersonagemService {
                 personagemAtualizado.getChakra()
         );
 
+    }
+
+    public PersonagemResponse buscarPersonagemPorId(Long id){
+        Personagem personagem = personagemRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Personagem com Id " + id + " não encontrado!")
+                );
+
+        return new PersonagemResponse(
+                personagem.getId(),
+                personagem.getNome(),
+                personagem.getIdade(),
+                personagem.getAldeia(),
+                personagem.getJutsus(),
+                personagem.getChakra()
+        );
     }
 
 

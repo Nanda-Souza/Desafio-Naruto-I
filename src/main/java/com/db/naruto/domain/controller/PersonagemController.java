@@ -11,7 +11,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -29,37 +31,75 @@ public class PersonagemController {
         return ResponseEntity.ok(personagemService.listarPersonagens());
     }
 
+    @Operation(description = "Busca um personagem por id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retorna o personagem com base no Id informado"),
+            @ApiResponse(responseCode = "404", description = "Não encontrou o personagem pelo id informado")
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<PersonagemResponse> listarPersonagenPorId(
+            @PathVariable Long id
+    ) {
+        return ResponseEntity.ok(personagemService.buscarPersonagemPorId(id));
+    }
+
     @Operation(description = "Cria um ninja de ninjutsu")
-    @ApiResponse(responseCode = "200", description = "Retorna o ninja de ninjutsu criado")
+    @ApiResponse(responseCode = "201", description = "Retorna o ninja de ninjutsu criado")
     @PostMapping("/ninja_de_ninjutsu")
     public ResponseEntity<PersonagemResponse> salvarNinjaDeNinjutsu(
             @RequestBody @Valid PersonagemRequest personagemRequest
     ){
-        return ResponseEntity.ok(personagemService.salvarNinjaDeNinjutsu(personagemRequest));
+        PersonagemResponse salvo = personagemService.salvarNinjaDeNinjutsu(personagemRequest);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(salvo.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(salvo);
     }
 
     @Operation(description = "Cria um ninja de taijutsu")
-    @ApiResponse(responseCode = "200", description = "Retorna o ninja de taijutsu criado")
+    @ApiResponse(responseCode = "201", description = "Retorna o ninja de taijutsu criado")
     @PostMapping("/ninja_de_taijutsu")
     public ResponseEntity<PersonagemResponse> salvarNinjaDeTaijutsu(
             @RequestBody @Valid PersonagemRequest personagemRequest
     ){
-        return ResponseEntity.ok(personagemService.salvarNinjaDeTaijutsu(personagemRequest));
+        PersonagemResponse salvo = personagemService.salvarNinjaDeTaijutsu(personagemRequest);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(salvo.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(salvo);
     }
 
     @Operation(description = "Cria um ninja de genjutsu")
-    @ApiResponse(responseCode = "200", description = "Retorna o ninja de genjutsu criado")
+    @ApiResponse(responseCode = "201", description = "Retorna o ninja de genjutsu criado")
     @PostMapping("/ninja_de_genjutsu")
     public ResponseEntity<PersonagemResponse> salvarNinjaDeGejutsu(
             @RequestBody @Valid PersonagemRequest personagemRequest
     ){
-        return ResponseEntity.ok(personagemService.salvarNinjaDeGenjutsu(personagemRequest));
+
+        PersonagemResponse salvo = personagemService.salvarNinjaDeGenjutsu(personagemRequest);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(salvo.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(salvo);
+
     }
 
     @Operation(description = "Deleta um personagem com base no id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Retorna uma resposta vazia quando deleta o personagem com sucesso"),
-            @ApiResponse(responseCode = "500", description = "Não encontrou o personagem pelo id informado")
+            @ApiResponse(responseCode = "204", description = "Retorna uma resposta vazia quando deleta o personagem com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Não encontrou o personagem pelo id informado")
     })
 
     @DeleteMapping("/{id}")
@@ -73,12 +113,12 @@ public class PersonagemController {
     @Operation(description = "Atualiza um personagem com base no id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retorna o personagem atualizado"),
-            @ApiResponse(responseCode = "500", description = "Não encontrou o personagem pelo id informado")
+            @ApiResponse(responseCode = "404", description = "Não encontrou o personagem pelo id informado")
     })
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<PersonagemResponse> atualizarPersonagem(
             @PathVariable Long id,
-            @RequestBody PersonagemUpdateRequest personagemRequest
+            @RequestBody @Valid PersonagemUpdateRequest personagemRequest
     ) {
         return ResponseEntity.ok(personagemService.atualizarPersonagem(id, personagemRequest));
     }

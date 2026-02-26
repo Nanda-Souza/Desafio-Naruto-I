@@ -14,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -224,12 +226,13 @@ public class PersonagemServiceTest {
         when(personagemRepository.findById(id))
                 .thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
                 () -> personagemService.deletarPersonagem(id)
         );
 
-        assertEquals("Personagem com Id 1 não foi encontrado!", exception.getMessage(), "Deve retornar personagem com Id 1 não foi encontrado!");
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode(), "Deve retornar status code 404!");
+        assertEquals("Personagem com Id 1 não foi encontrado!", exception.getReason(), "Deve retornar personagem com Id 1 não foi encontrado!");
 
         verify(personagemRepository).findById(id);
         verify(personagemRepository, never()).delete(any());
@@ -295,12 +298,14 @@ public class PersonagemServiceTest {
         when(personagemRepository.findById(id))
                 .thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
                 () -> personagemService.atualizarPersonagem(id, updateRequest)
         );
 
-        assertEquals("Personagem com Id 1 não foi encontrado!",exception.getMessage(), "Deve retornar personagem com o id 1 não foi encontrado!");
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode(), "Deve retornar statu code 404!");
+        assertEquals("Personagem com Id 1 não foi encontrado!", exception.getReason(), "Deve retornar personagem com o id 1 não foi encontrado!");
 
         verify(personagemRepository).findById(id);
         verify(personagemRepository, never()).save(any());
