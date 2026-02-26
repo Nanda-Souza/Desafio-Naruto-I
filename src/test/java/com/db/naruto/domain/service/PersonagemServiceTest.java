@@ -14,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -216,7 +218,7 @@ public class PersonagemServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao tentar deletar um personagem inexistente!")
+    @DisplayName("Deve lançar exceção 404 ao tentar deletar um personagem inexistente!")
     void deveLancarExcecaoAoDeletarPersonagemInexistente(){
 
         Long id = 1L;
@@ -224,12 +226,13 @@ public class PersonagemServiceTest {
         when(personagemRepository.findById(id))
                 .thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
                 () -> personagemService.deletarPersonagem(id)
         );
 
-        assertEquals("Personagem com Id 1 não foi encontrado!", exception.getMessage(), "Deve retornar personagem com Id 1 não foi encontrado!");
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode(), "Deve retornar status code 404!");
+        assertEquals("Personagem com Id 1 não foi encontrado!", exception.getReason(), "Deve retornar personagem com Id 1 não foi encontrado!");
 
         verify(personagemRepository).findById(id);
         verify(personagemRepository, never()).delete(any());
@@ -279,7 +282,7 @@ public class PersonagemServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar exceção ao tentar atualizar um personagem com inexistente!")
+    @DisplayName("Deve lançar exceção 404 ao tentar atualizar um personagem com inexistente!")
     void deveLancarExcecaoAoAtualizarPersonagemInexistente(){
 
         Long id = 1L;
@@ -295,17 +298,69 @@ public class PersonagemServiceTest {
         when(personagemRepository.findById(id))
                 .thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+
+        ResponseStatusException exception = assertThrows(
+                ResponseStatusException.class,
                 () -> personagemService.atualizarPersonagem(id, updateRequest)
         );
 
-        assertEquals("Personagem com Id 1 não foi encontrado!",exception.getMessage(), "Deve retornar personagem com o id 1 não foi encontrado!");
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode(), "Deve retornar statu code 404!");
+        assertEquals("Personagem com Id 1 não foi encontrado!", exception.getReason(), "Deve retornar personagem com o id 1 não foi encontrado!");
 
         verify(personagemRepository).findById(id);
         verify(personagemRepository, never()).save(any());
 
 
+    }
+
+
+    @Test
+    @DisplayName("Deve retornar o personagem ao buscar por id com sucesso!")
+    void deveRetornarPersonagemPorIdComSucesso() {
+        Long id = 1L;
+
+        List<String> jutsus = new ArrayList<>();
+        jutsus.add("Técnica do Dragão de Fogo");
+
+        Personagem personagem = new Personagem(
+                "Sasuke Uchiha",
+                12,
+                "Konoha",
+                jutsus,
+                75
+        );
+
+        // simulando entidade com id (se necessário, via reflexão ou setter se existir)
+        // aqui assumimos que o mapeamento do response não depende do setId manualmente no teste
+
+        when(personagemRepository.findById(id)).thenReturn(Optional.of(personagem));
+
+        PersonagemResponse response = personagemService.buscarPersonagemPorId(id);
+
+        assertNotNull(response, "O retorno não pode ser nulo!");
+        assertEquals("Sasuke Uchiha", response.nome(), "Deve retornar Sasuke Uchiha!");
+
+        verify(personagemRepository).findById(id);
+    }
+
+
+    @Test
+    @DisplayName("Deve lançar exceção 404 ao buscar personagem inexistente por id!")
+    void deveLancarExcecaoQuandoNaoEncontrarPersonagemPorId() {
+        Long id = 1L;
+
+        when(personagemRepository.findById(id)).thenReturn(Optional.empty());
+
+        ResponseStatusException ex = assertThrows(
+                ResponseStatusException.class,
+                () -> personagemService.buscarPersonagemPorId(id)
+        );
+
+        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode(), "Deve retornar status code 404!");
+        assertEquals("Personagem com Id 1 não encontrado!", ex.getReason(),"Deve retornar mensagem de não encontrado!");
+
+        verify(personagemRepository).findById(id);
+        verify(personagemRepository, never()).save(any());
     }
 
 
