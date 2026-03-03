@@ -52,8 +52,8 @@ public class PersonagemController {
         PersonagemResponse salvo = personagemService.salvarNinjaDeNinjutsu(personagemRequest);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
+                .fromCurrentContextPath()
+                .path("personagem/{id}")
                 .buildAndExpand(salvo.id())
                 .toUri();
 
@@ -69,8 +69,8 @@ public class PersonagemController {
         PersonagemResponse salvo = personagemService.salvarNinjaDeTaijutsu(personagemRequest);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
+                .fromCurrentContextPath()
+                .path("personagem/{id}")
                 .buildAndExpand(salvo.id())
                 .toUri();
 
@@ -87,8 +87,8 @@ public class PersonagemController {
         PersonagemResponse salvo = personagemService.salvarNinjaDeGenjutsu(personagemRequest);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
+                .fromCurrentContextPath()
+                .path("personagem/{id}")
                 .buildAndExpand(salvo.id())
                 .toUri();
 
