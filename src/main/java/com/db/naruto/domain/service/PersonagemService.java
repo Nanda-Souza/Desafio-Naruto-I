@@ -4,10 +4,7 @@ package com.db.naruto.domain.service;
 import com.db.naruto.domain.dto.PersonagemRequest;
 import com.db.naruto.domain.dto.PersonagemResponse;
 import com.db.naruto.domain.dto.PersonagemUpdateRequest;
-import com.db.naruto.domain.entity.NinjaDeGenjutsu;
-import com.db.naruto.domain.entity.NinjaDeNinjutsu;
-import com.db.naruto.domain.entity.NinjaDeTaijutsu;
-import com.db.naruto.domain.entity.Personagem;
+import com.db.naruto.domain.entity.*;
 import com.db.naruto.domain.repository.PersonagemRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,10 +26,9 @@ public class PersonagemService {
                 .map( personagem -> new PersonagemResponse(
                         personagem.getId(),
                         personagem.getNome(),
-                        personagem.getIdade(),
-                        personagem.getAldeia(),
-                        personagem.getJutsus(),
-                        personagem.getChakra()
+                        personagem.getVida(),
+                        personagem.getChakra(),
+                        personagem.getJutsus()
                 )).toList();
     }
 
@@ -40,10 +36,17 @@ public class PersonagemService {
 
         NinjaDeNinjutsu ninja = new NinjaDeNinjutsu(
                 personagemRequest.nome(),
-                personagemRequest.idade(),
-                personagemRequest.aldeia(),
-                personagemRequest.jutsus(),
-                personagemRequest.chakra()
+                personagemRequest.vida()
+        );
+
+        personagemRequest.jutsus().forEach((nomeJutsu, jutsuRequest) ->
+                ninja.getJutsus().put(
+                        nomeJutsu,
+                        new Jutsus(
+                                jutsuRequest.dano(),
+                                jutsuRequest.consumoDeChakra()
+                        )
+                )
         );
 
         NinjaDeNinjutsu ninjaSalvo = personagemRepository.save(ninja);
@@ -51,10 +54,9 @@ public class PersonagemService {
         return new PersonagemResponse(
                 ninjaSalvo.getId(),
                 ninjaSalvo.getNome(),
-                ninjaSalvo.getIdade(),
-                ninjaSalvo.getAldeia(),
-                ninjaSalvo.getJutsus(),
-                ninjaSalvo.getChakra()
+                ninjaSalvo.getVida(),
+                ninjaSalvo.getChakra(),
+                ninjaSalvo.getJutsus()
         );
     }
 
@@ -62,10 +64,17 @@ public class PersonagemService {
 
         NinjaDeTaijutsu ninja = new NinjaDeTaijutsu(
                 personagemRequest.nome(),
-                personagemRequest.idade(),
-                personagemRequest.aldeia(),
-                personagemRequest.jutsus(),
-                personagemRequest.chakra()
+                personagemRequest.vida()
+        );
+
+        personagemRequest.jutsus().forEach((nomeJutsu, jutsuRequest) ->
+                ninja.getJutsus().put(
+                        nomeJutsu,
+                        new Jutsus(
+                                jutsuRequest.dano(),
+                                jutsuRequest.consumoDeChakra()
+                        )
+                )
         );
 
         NinjaDeTaijutsu ninjaSalvo = personagemRepository.save(ninja);
@@ -73,10 +82,9 @@ public class PersonagemService {
         return new PersonagemResponse(
                 ninjaSalvo.getId(),
                 ninjaSalvo.getNome(),
-                ninjaSalvo.getIdade(),
-                ninjaSalvo.getAldeia(),
-                ninjaSalvo.getJutsus(),
-                ninjaSalvo.getChakra()
+                ninjaSalvo.getVida(),
+                ninjaSalvo.getChakra(),
+                ninjaSalvo.getJutsus()
         );
     }
 
@@ -84,10 +92,17 @@ public class PersonagemService {
 
         NinjaDeGenjutsu ninja = new NinjaDeGenjutsu(
                 personagemRequest.nome(),
-                personagemRequest.idade(),
-                personagemRequest.aldeia(),
-                personagemRequest.jutsus(),
-                personagemRequest.chakra()
+                personagemRequest.vida()
+        );
+
+        personagemRequest.jutsus().forEach((nomeJutsu, jutsuRequest) ->
+                ninja.getJutsus().put(
+                        nomeJutsu,
+                        new Jutsus(
+                                jutsuRequest.dano(),
+                                jutsuRequest.consumoDeChakra()
+                        )
+                )
         );
 
         NinjaDeGenjutsu ninjaSalvo = personagemRepository.save(ninja);
@@ -95,12 +110,12 @@ public class PersonagemService {
         return new PersonagemResponse(
                 ninjaSalvo.getId(),
                 ninjaSalvo.getNome(),
-                ninjaSalvo.getIdade(),
-                ninjaSalvo.getAldeia(),
-                ninjaSalvo.getJutsus(),
-                ninjaSalvo.getChakra()
+                ninjaSalvo.getVida(),
+                ninjaSalvo.getChakra(),
+                ninjaSalvo.getJutsus()
         );
     }
+
 
     public void deletarPersonagem(Long id){
 
@@ -126,38 +141,40 @@ public class PersonagemService {
             personagem.setNome(personagemUpdate.nome().trim());
         }
 
-        Integer idadeNinja = personagemUpdate.idade();
-        if (idadeNinja != null){
-            personagem.setIdade(idadeNinja);
+        Integer vidaNinja = personagemUpdate.vida();
+        if (vidaNinja != null){
+            personagem.setVida(vidaNinja);
         }
 
-        if (personagemUpdate.aldeia() != null){
-            personagem.setAldeia(personagemUpdate.aldeia().trim());
+        if (personagemUpdate.jutsus() != null) {
+
+            personagemUpdate.jutsus().forEach((nomeJutsu, jutsuRequest) -> {
+
+                personagem.getJutsus().put(
+                        nomeJutsu,
+                        new Jutsus(
+                                jutsuRequest.dano(),
+                                jutsuRequest.consumoDeChakra()
+                        )
+                );
+
+            });
         }
 
-        if  (personagemUpdate.jutsus() != null){
-            personagem.setJutsus(personagemUpdate.jutsus());
-        }
 
-
-
-        Integer chakraNinja = personagemUpdate.chakra();
-        if (chakraNinja != null){
-            personagem.setChakra(chakraNinja);
-        }
 
         Personagem personagemAtualizado = personagemRepository.save(personagem);
 
         return new PersonagemResponse(
                 personagemAtualizado.getId(),
                 personagemAtualizado.getNome(),
-                personagemAtualizado.getIdade(),
-                personagemAtualizado.getAldeia(),
-                personagemAtualizado.getJutsus(),
-                personagemAtualizado.getChakra()
+                personagemAtualizado.getVida(),
+                personagemAtualizado.getChakra(),
+                personagemAtualizado.getJutsus()
         );
 
     }
+
 
     public PersonagemResponse buscarPersonagemPorId(Long id){
         Personagem personagem = personagemRepository.findById(id)
@@ -169,10 +186,9 @@ public class PersonagemService {
         return new PersonagemResponse(
                 personagem.getId(),
                 personagem.getNome(),
-                personagem.getIdade(),
-                personagem.getAldeia(),
-                personagem.getJutsus(),
-                personagem.getChakra()
+                personagem.getVida(),
+                personagem.getChakra(),
+                personagem.getJutsus()
         );
     }
 
