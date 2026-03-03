@@ -9,8 +9,8 @@ import java.util.List;
 @DiscriminatorValue("ninjutsu")
 public class NinjaDeNinjutsu extends Personagem implements Ninja{
 
-    public NinjaDeNinjutsu(String nome, int idade, String aldeia, List<String> jutsus, int chakra) {
-        super(nome, idade, aldeia, jutsus, chakra);
+    public NinjaDeNinjutsu(String nome, int vida) {
+        super(nome, vida);
     }
 
     protected NinjaDeNinjutsu() {
