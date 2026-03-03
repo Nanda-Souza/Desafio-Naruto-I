@@ -96,6 +96,25 @@ public class PersonagemController {
 
     }
 
+    @Operation(description = "Cria um personagem ninja")
+    @ApiResponse(responseCode = "201", description = "Retorna o personagem ninja criado")
+    @PostMapping()
+    public ResponseEntity<PersonagemResponse> salvarPersonagem(
+            @RequestBody @Valid PersonagemRequest personagemRequest
+    ){
+
+        PersonagemResponse salvo = personagemService.salvarPersonagem(personagemRequest);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("personagem/{id}")
+                .buildAndExpand(salvo.id())
+                .toUri();
+
+        return ResponseEntity.created(location).body(salvo);
+
+    }
+
     @Operation(description = "Deleta um personagem com base no id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Retorna uma resposta vazia quando deleta o personagem com sucesso"),

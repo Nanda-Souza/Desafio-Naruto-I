@@ -1,5 +1,6 @@
 package com.db.naruto.domain.dto;
 
+import com.db.naruto.domain.entity.TipoNinja;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
@@ -14,6 +15,11 @@ public record PersonagemRequest(
         @NotNull(message = "O ninja deve ter um valor para vida!")
         @Positive(message = "O ninja deve ter vida maior que zero!")
         Integer vida,
+
+
+        @NotNull(message = "O tipo do ninja é obrigatório!")
+        TipoNinja tipoNinja,
+
 
         @NotNull(message = "O ninja deve possuir ao menos um jutsu!")
         @Size(min = 1, message = "O ninja deve possuir ao menos um jutsu!")

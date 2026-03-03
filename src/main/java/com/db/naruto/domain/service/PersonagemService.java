@@ -116,6 +116,35 @@ public class PersonagemService {
         );
     }
 
+    public PersonagemResponse salvarPersonagem(PersonagemRequest personagemRequest){
+
+        Personagem ninja = switch (personagemRequest.tipoNinja()){
+            case NINJUTSU -> new NinjaDeNinjutsu(personagemRequest.nome(), personagemRequest.vida());
+            case GENJUTSU -> new NinjaDeGenjutsu(personagemRequest.nome(), personagemRequest.vida());
+            case TAIJUTSU -> new NinjaDeTaijutsu(personagemRequest.nome(), personagemRequest.vida());
+        };
+
+        personagemRequest.jutsus().forEach((nomeJutsu, jutsuRequest) ->
+                ninja.getJutsus().put(
+                        nomeJutsu,
+                        new Jutsus(
+                                jutsuRequest.dano(),
+                                jutsuRequest.consumoDeChakra()
+                        )
+                )
+        );
+
+        Personagem ninjaSalvo = personagemRepository.save(ninja);
+
+        return new PersonagemResponse(
+                ninjaSalvo.getId(),
+                ninjaSalvo.getNome(),
+                ninjaSalvo.getVida(),
+                ninjaSalvo.getChakra(),
+                ninjaSalvo.getJutsus()
+        );
+    }
+
 
     public void deletarPersonagem(Long id){
 
