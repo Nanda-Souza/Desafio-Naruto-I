@@ -1,13 +1,14 @@
 package com.db.naruto.domain.dto;
 
-import java.util.List;
+import com.db.naruto.domain.entity.Jutsus;
+
+import java.util.Map;
 
 public record PersonagemResponse(
         Long id,
         String nome,
-        int idade,
-        String aldeia,
-        List<String> jutsus,
-        int chakra
+        int vida,
+        int chakra,
+        Map<String, Jutsus> jutsus
 ) {
 }
