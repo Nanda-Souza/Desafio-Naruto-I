@@ -48,7 +48,7 @@ public class PersonagemIntegrationTest {
         mockMvc.perform(post("/personagem/ninja_de_ninjutsu")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.nome").value("Sakura Haruno"));
     }
@@ -69,7 +69,7 @@ public class PersonagemIntegrationTest {
         mockMvc.perform(post("/personagem/ninja_de_genjutsu")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.nome").value("Shikamaru Nara"));
 
@@ -91,7 +91,7 @@ public class PersonagemIntegrationTest {
         mockMvc.perform(post("/personagem/ninja_de_taijutsu")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.nome").value("Neji Hyuuga"));
 
@@ -134,17 +134,17 @@ public class PersonagemIntegrationTest {
         mockMvc.perform(post("/personagem/ninja_de_ninjutsu")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json1))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mockMvc.perform(post("/personagem/ninja_de_genjutsu")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json2))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mockMvc.perform(post("/personagem/ninja_de_taijutsu")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json3))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mockMvc.perform(get("/personagem"))
                 .andExpect(status().isOk())
@@ -172,7 +172,7 @@ public class PersonagemIntegrationTest {
         String response = mockMvc.perform(post("/personagem/ninja_de_ninjutsu")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -205,7 +205,7 @@ public class PersonagemIntegrationTest {
         String response = mockMvc.perform(post("/personagem/ninja_de_ninjutsu")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -219,7 +219,7 @@ public class PersonagemIntegrationTest {
         }
         """;
 
-        mockMvc.perform(put("/personagem/{id}", id)
+        mockMvc.perform(patch("/personagem/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonUpdate))
                 .andExpect(status().isOk())
