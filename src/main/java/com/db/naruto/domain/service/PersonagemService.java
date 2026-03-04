@@ -121,6 +121,12 @@ public class PersonagemService {
 
     }
 
+    public PersonagemResponse buscarPersonagemPorId(Long id){
+        Personagem personagem = personagemRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "Personagem com Id " + id + " não encontrado!")
+                );
 
     public PersonagemResponse buscarPersonagemPorId(Long id){
         Personagem personagem = personagemRepository.findById(id)
