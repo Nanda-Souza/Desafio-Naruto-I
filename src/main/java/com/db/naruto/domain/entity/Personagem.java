@@ -1,10 +1,15 @@
 package com.db.naruto.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
+
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tipo_ninja", length = 30)
@@ -16,62 +21,19 @@ public class Personagem {
     private Long id;
 
     private String nome;
-    private int idade;
-    private String aldeia;
-    private List<String> jutsus = new ArrayList<>();
+    private int vida;
     private int chakra;
 
-    public Personagem(String nome, int idade, String aldeia, List<String> jutsus, int chakra) {
+    @ElementCollection
+    @CollectionTable(name = "personagem_jutsus",
+            joinColumns = @JoinColumn(name = "personagem_id"))
+    @MapKeyColumn(name = "nome_jutsu")
+    private Map<String, Jutsus> jutsus = new HashMap<>();
+
+    public Personagem(String nome, int vida ) {
         this.nome = nome;
-        this.idade = idade;
-        this.aldeia = aldeia;
-        this.jutsus = jutsus;
-        this.chakra = chakra;
+        this.vida = vida;
+        this.chakra = 100;
     }
 
-    protected Personagem() {}
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public int getIdade() {
-        return idade;
-    }
-
-    public String getAldeia() {
-        return aldeia;
-    }
-
-    public List<String> getJutsus() {
-        return jutsus;
-    }
-
-    public int getChakra() {
-        return chakra;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setIdade(int idade) {
-        this.idade = idade;
-    }
-
-    public void setAldeia(String aldeia) {
-        this.aldeia = aldeia;
-    }
-
-    public void setJutsus(List<String> jutsus) {
-        this.jutsus = jutsus;
-    }
-
-    public void setChakra(int chakra) {
-        this.chakra = chakra;
-    }
 }

@@ -1,12 +1,10 @@
 package com.db.naruto.domain.service;
 
+import com.db.naruto.domain.dto.JutsuRequest;
 import com.db.naruto.domain.dto.PersonagemRequest;
 import com.db.naruto.domain.dto.PersonagemResponse;
 import com.db.naruto.domain.dto.PersonagemUpdateRequest;
-import com.db.naruto.domain.entity.NinjaDeGenjutsu;
-import com.db.naruto.domain.entity.NinjaDeNinjutsu;
-import com.db.naruto.domain.entity.NinjaDeTaijutsu;
-import com.db.naruto.domain.entity.Personagem;
+import com.db.naruto.domain.entity.*;
 import com.db.naruto.domain.repository.PersonagemRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,9 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,32 +33,44 @@ public class PersonagemServiceTest {
     @DisplayName("Deve salvar e retornar o Ninja de Ninjutsu com sucesso!")
     void deveSalvarNinjaDeNinjutsuComSucesso(){
 
-        List<String> jutsus = new ArrayList<>();
-        jutsus.add("Técnica do Dragão de Fogo");
+
+        Map<String, JutsuRequest> jutsus = new HashMap<>();
+        jutsus.put("Rasengan", new JutsuRequest(65, 40));
+
 
         PersonagemRequest request = new PersonagemRequest(
-                "Sasuke Uchiha",
-                12,
-                "Konoha",
-                jutsus,
-                75
+                "Naruto Uzumaki",
+                110,
+                TipoNinja.NINJUTSU,
+                jutsus
         );
 
         NinjaDeNinjutsu ninjaSalvo = new NinjaDeNinjutsu(
                 request.nome(),
-                request.idade(),
-                request.aldeia(),
-                request.jutsus(),
-                request.idade()
+                request.vida()
+        );
+
+        request.jutsus().forEach((nomeJutsu, jutsuRequest) ->
+                ninjaSalvo.getJutsus().put(
+                        nomeJutsu,
+                        new Jutsus(
+                                jutsuRequest.dano(),
+                                jutsuRequest.consumoDeChakra()
+                        )
+                )
         );
 
         when(personagemRepository.save(any(NinjaDeNinjutsu.class)))
                 .thenReturn(ninjaSalvo);
 
-        PersonagemResponse response = personagemService.salvarNinjaDeNinjutsu(request);
+        PersonagemResponse response = personagemService.salvarPersonagem(request);
 
         assertNotNull(response, "O retorno não pode ser nulo!");
-        assertEquals("Sasuke Uchiha", response.nome(), "Deve retornar Sasuke Uchiha!");
+        assertEquals("Naruto Uzumaki", response.nome(), "Deve retornar Naruto Uzumaki!");
+        assertTrue(response.jutsus().containsKey("Rasengan"), "Deve retornar o Jutsu Rasengan!");
+        assertEquals(65, response.jutsus().get("Rasengan").getDano(), "Deve retornar 65 de dano!");
+        assertEquals(40, response.jutsus().get("Rasengan").getConsumoDeChakra(), "Deve retornar 40 de consumo de chakra!");
+
 
     }
 
@@ -70,65 +78,90 @@ public class PersonagemServiceTest {
     @DisplayName("Deve salvar e retornar o Ninja de Taijutsu com sucesso!")
     void deveSalvarNinjaDeTaijutsuComSucesso(){
 
-        List<String> jutsus = new ArrayList<>();
-        jutsus.add("Furacão da Folha");
+
+        Map<String, JutsuRequest> jutsus = new HashMap<>();
+        jutsus.put("Oito Trigramas: Palma Rotativa", new JutsuRequest(35, 10));
+
 
         PersonagemRequest request = new PersonagemRequest(
-                "Rock Lee",
-                12,
-                "Konoha",
-                jutsus,
-                20
+                "Neji Hyuuga",
+                130,
+                TipoNinja.TAIJUTSU,
+                jutsus
         );
 
         NinjaDeTaijutsu ninjaSalvo = new NinjaDeTaijutsu(
                 request.nome(),
-                request.idade(),
-                request.aldeia(),
-                request.jutsus(),
-                request.idade()
+                request.vida()
+        );
+
+        request.jutsus().forEach((nomeJutsu, jutsuRequest) ->
+                ninjaSalvo.getJutsus().put(
+                        nomeJutsu,
+                        new Jutsus(
+                                jutsuRequest.dano(),
+                                jutsuRequest.consumoDeChakra()
+                        )
+                )
         );
 
         when(personagemRepository.save(any(NinjaDeTaijutsu.class)))
                 .thenReturn(ninjaSalvo);
 
-        PersonagemResponse response = personagemService.salvarNinjaDeTaijutsu(request);
+        PersonagemResponse response = personagemService.salvarPersonagem(request);
 
         assertNotNull(response, "O retorno não pode ser nulo!");
-        assertEquals("Rock Lee", response.nome(), "Deve retornar Rock Lee!");
+        assertEquals("Neji Hyuuga", response.nome(), "Deve retornar Neji Hyuuga!");
+        assertTrue(response.jutsus().containsKey("Oito Trigramas: Palma Rotativa"), "Deve retornar o Jutsu Oito Trigramas: Palma Rotativa!");
+        assertEquals(35, response.jutsus().get("Oito Trigramas: Palma Rotativa").getDano(), "Deve retornar 35 de dano!");
+        assertEquals(10, response.jutsus().get("Oito Trigramas: Palma Rotativa").getConsumoDeChakra(), "Deve retornar 10 de consumo de chakra!");
+
 
     }
+
 
     @Test
     @DisplayName("Deve salvar e retornar o Ninja de Genjutsu com sucesso!")
     void deveSalvarNinjaDeGenjutsuComSucesso(){
 
-        List<String> jutsus = new ArrayList<>();
-        jutsus.add("Técnica de Transferência de Mente");
+
+        Map<String, JutsuRequest> jutsus = new HashMap<>();
+        jutsus.put("Técnica da Captura pela Sombra", new JutsuRequest(25, 10));
+
 
         PersonagemRequest request = new PersonagemRequest(
-                "Ino Yamanaka",
-                12,
-                "Konoha",
-                jutsus,
-                60
+                "Shikamaru Nara",
+                115,
+                TipoNinja.GENJUTSU,
+                jutsus
         );
 
         NinjaDeGenjutsu ninjaSalvo = new NinjaDeGenjutsu(
                 request.nome(),
-                request.idade(),
-                request.aldeia(),
-                request.jutsus(),
-                request.idade()
+                request.vida()
+        );
+
+        request.jutsus().forEach((nomeJutsu, jutsuRequest) ->
+                ninjaSalvo.getJutsus().put(
+                        nomeJutsu,
+                        new Jutsus(
+                                jutsuRequest.dano(),
+                                jutsuRequest.consumoDeChakra()
+                        )
+                )
         );
 
         when(personagemRepository.save(any(NinjaDeGenjutsu.class)))
                 .thenReturn(ninjaSalvo);
 
-        PersonagemResponse response = personagemService.salvarNinjaDeGenjutsu(request);
+        PersonagemResponse response = personagemService.salvarPersonagem(request);
 
         assertNotNull(response, "O retorno não pode ser nulo!");
-        assertEquals("Ino Yamanaka", response.nome(), "Deve retornar Ino Yamanaka!");
+        assertEquals("Shikamaru Nara", response.nome(), "Deve retornar Shikamaru Nara!");
+        assertTrue(response.jutsus().containsKey("Técnica da Captura pela Sombra"), "Deve retornar o Jutsu Técnica da Captura pela Sombra!");
+        assertEquals(25, response.jutsus().get("Técnica da Captura pela Sombra").getDano(), "Deve retornar 25 de dano!");
+        assertEquals(10, response.jutsus().get("Técnica da Captura pela Sombra").getConsumoDeChakra(), "Deve retornar 10 de consumo de chakra!");
+
 
     }
 
@@ -136,41 +169,38 @@ public class PersonagemServiceTest {
     @DisplayName("Deve listar todos os personagens cadastrados!")
     void deveListarTodosOsPersonagensCadastrados(){
 
-        List<String> jutsusSasuke = new ArrayList<>();
-        jutsusSasuke.add("Técnica do Dragão de Fogo");
+        Map<String, Jutsus> jutsusPersonagem1 = new HashMap<>();
+        jutsusPersonagem1.put("Rasengan", new Jutsus(65, 40));
 
-        NinjaDeNinjutsu sasuke = new NinjaDeNinjutsu(
-                "Sasuke Uchiha",
-                12,
-                "Konoha",
-                jutsusSasuke,
-                75
+        NinjaDeNinjutsu personagem1 = new NinjaDeNinjutsu(
+                "Naruto Uzumaki",
+                110
         );
 
-        List<String> jutsusRockLee = new ArrayList<>();
-        jutsusRockLee.add("Furacão da Folha");
+        personagem1.setJutsus(jutsusPersonagem1);
 
-        NinjaDeTaijutsu rockLee = new NinjaDeTaijutsu(
-                "Rock Lee",
-                12,
-                "Konoha",
-                jutsusRockLee,
-                20
+        Map<String, Jutsus> jutsusPersonagem2 = new HashMap<>();
+        jutsusPersonagem2.put("Oito Trigramas: Palma Rotativa", new Jutsus(35, 10));
+
+        NinjaDeTaijutsu personagem2 = new NinjaDeTaijutsu(
+                "Neji Hyuuga",
+                130
         );
 
-        List<String> jutsusInoYamanaka = new ArrayList<>();
-        jutsusInoYamanaka.add("Técnica de Transferência de Mente");
+        personagem2.setJutsus(jutsusPersonagem2);
 
-        NinjaDeGenjutsu inoYamanaka = new NinjaDeGenjutsu(
-                "Ino Yamanaka",
-                12,
-                "Konoha",
-                jutsusInoYamanaka,
-                60
+        Map<String, Jutsus> jutsusPersonagem3 = new HashMap<>();
+        jutsusPersonagem3.put("Técnica da Captura pela Sombra", new Jutsus(25, 10));
+
+        NinjaDeGenjutsu personagem3 = new NinjaDeGenjutsu(
+                "Shikamaru Nara",
+                115
         );
+
+        personagem3.setJutsus(jutsusPersonagem3);
 
         when(personagemRepository.findAll())
-                .thenReturn(List.of(sasuke, rockLee, inoYamanaka));
+                .thenReturn(List.of(personagem1, personagem2, personagem3));
 
         List<PersonagemResponse> response = personagemService.listarPersonagens();
 
@@ -178,13 +208,22 @@ public class PersonagemServiceTest {
         assertEquals(3, response.size(), "Deve retornar uma lista com três personagens!");
 
         PersonagemResponse primeiroPersonagem = response.get(0);
-        assertEquals("Sasuke Uchiha", primeiroPersonagem.nome(), "Deve retornar Sasuke Uchiha!");
+        assertEquals("Naruto Uzumaki", primeiroPersonagem.nome(), "Deve retornar Naruto Uzumaki!");
+        assertTrue(primeiroPersonagem.jutsus().containsKey("Rasengan"), "Deve retornar o Jutsu Rasengan!");
+        assertEquals(65, primeiroPersonagem.jutsus().get("Rasengan").getDano(), "Deve retornar 65 de dano!");
+        assertEquals(40, primeiroPersonagem.jutsus().get("Rasengan").getConsumoDeChakra(), "Deve retornar 40 de consumo de chakra!");
 
         PersonagemResponse segundoPersonagem = response.get(1);
-        assertEquals("Rock Lee", segundoPersonagem.nome(), "Deve retornar Rock Lee!");
+        assertEquals("Neji Hyuuga", segundoPersonagem.nome(), "Deve retornar Neji Hyuuga!");
+        assertTrue(segundoPersonagem.jutsus().containsKey("Oito Trigramas: Palma Rotativa"), "Deve retornar o Jutsu Oito Trigramas: Palma Rotativa!");
+        assertEquals(35, segundoPersonagem.jutsus().get("Oito Trigramas: Palma Rotativa").getDano(), "Deve retornar 35 de dano!");
+        assertEquals(10, segundoPersonagem.jutsus().get("Oito Trigramas: Palma Rotativa").getConsumoDeChakra(), "Deve retornar 10 de consumo de chakra!");
 
         PersonagemResponse terceiroPersonagem = response.get(2);
-        assertEquals("Ino Yamanaka", terceiroPersonagem.nome(), "Deve retornar Ino Yamanak!");
+        assertEquals("Shikamaru Nara", terceiroPersonagem.nome(), "Deve retornar Shikamaru Nara!");
+        assertTrue(terceiroPersonagem.jutsus().containsKey("Técnica da Captura pela Sombra"), "Deve retornar o Jutsu Técnica da Captura pela Sombra!");
+        assertEquals(25, terceiroPersonagem.jutsus().get("Técnica da Captura pela Sombra").getDano(), "Deve retornar 25 de dano!");
+        assertEquals(10, terceiroPersonagem.jutsus().get("Técnica da Captura pela Sombra").getConsumoDeChakra(), "Deve retornar 10 de consumo de chakra!");
 
         verify(personagemRepository, times(1)).findAll();
 
@@ -196,16 +235,15 @@ public class PersonagemServiceTest {
 
         Long id = 1L;
 
-        List<String> jutsus = new ArrayList<>();
-        jutsus.add("Clone Das Sombras");
+        Map<String, Jutsus> jutsusPersonagem = new HashMap<>();
+        jutsusPersonagem.put("Rasengan", new Jutsus(65, 40));
 
-        Personagem personagem = new Personagem(
-                "Naruto",
-                12,
-                "Konoha",
-                jutsus,
-                50
+        NinjaDeNinjutsu personagem = new NinjaDeNinjutsu(
+                "Naruto Uzumaki",
+                110
         );
+
+        personagem.setJutsus(jutsusPersonagem);
 
         when(personagemRepository.findById(id))
                 .thenReturn(Optional.of(personagem));
@@ -245,23 +283,23 @@ public class PersonagemServiceTest {
 
         Long id = 1L;
 
-        List<String> jutsus = new ArrayList<>();
-        jutsus.add("Clone Das Sombras");
+        Map<String, Jutsus> jutsusPersonagem = new HashMap<>();
+        jutsusPersonagem.put("Rasengan", new Jutsus(6, 4));
 
-        Personagem personagem = new Personagem(
+        NinjaDeNinjutsu personagem = new NinjaDeNinjutsu(
                 "Naruto",
-                12,
-                "Konoha",
-                jutsus,
-                50
+                10
         );
+
+        personagem.setJutsus(jutsusPersonagem);
+
+        Map<String, JutsuRequest> jutsusPersonagemAtualizado = new HashMap<>();
+        jutsusPersonagemAtualizado.put("Rasengan", new JutsuRequest(65, 40));
 
         PersonagemUpdateRequest updateRequest = new PersonagemUpdateRequest(
                 "Naruto Uzumaki",
-                0,
-                null,
-                null,
-                0
+                110,
+                jutsusPersonagemAtualizado
         );
 
         when(personagemRepository.findById(id))
@@ -274,6 +312,9 @@ public class PersonagemServiceTest {
 
         assertNotNull(response, "O retorno não pode ser nulo!");
         assertEquals("Naruto Uzumaki", response.nome(), "Deve retornar Naruto Uzumaki!");
+        assertTrue(response.jutsus().containsKey("Rasengan"), "Deve retornar o Jutsu Rasengan!");
+        assertEquals(65, response.jutsus().get("Rasengan").getDano(), "Deve retornar 65 de dano!");
+        assertEquals(40, response.jutsus().get("Rasengan").getConsumoDeChakra(), "Deve retornar 40 de consumo de chakra!");
 
         verify(personagemRepository).findById(id);
         verify(personagemRepository).save(any(Personagem.class));
@@ -287,12 +328,13 @@ public class PersonagemServiceTest {
 
         Long id = 1L;
 
+        Map<String, JutsuRequest> jutsusPersonagemAtualizado = new HashMap<>();
+        jutsusPersonagemAtualizado.put("Rasengan", new JutsuRequest(65, 40));
+
         PersonagemUpdateRequest updateRequest = new PersonagemUpdateRequest(
                 "Naruto Uzumaki",
-                0,
-                null,
-                null,
-                0
+                110,
+                jutsusPersonagemAtualizado
         );
 
         when(personagemRepository.findById(id))
@@ -313,36 +355,33 @@ public class PersonagemServiceTest {
 
     }
 
-
     @Test
     @DisplayName("Deve retornar o personagem ao buscar por id com sucesso!")
     void deveRetornarPersonagemPorIdComSucesso() {
         Long id = 1L;
 
-        List<String> jutsus = new ArrayList<>();
-        jutsus.add("Técnica do Dragão de Fogo");
+        Map<String, Jutsus> jutsusPersonagem = new HashMap<>();
+        jutsusPersonagem.put("Rasengan", new Jutsus(65, 40));
 
-        Personagem personagem = new Personagem(
-                "Sasuke Uchiha",
-                12,
-                "Konoha",
-                jutsus,
-                75
+        NinjaDeNinjutsu personagem = new NinjaDeNinjutsu(
+                "Naruto Uzumaki",
+                110
         );
 
-        // simulando entidade com id (se necessário, via reflexão ou setter se existir)
-        // aqui assumimos que o mapeamento do response não depende do setId manualmente no teste
+        personagem.setJutsus(jutsusPersonagem);
 
         when(personagemRepository.findById(id)).thenReturn(Optional.of(personagem));
 
         PersonagemResponse response = personagemService.buscarPersonagemPorId(id);
 
         assertNotNull(response, "O retorno não pode ser nulo!");
-        assertEquals("Sasuke Uchiha", response.nome(), "Deve retornar Sasuke Uchiha!");
+        assertEquals("Naruto Uzumaki", response.nome(), "Deve retornar Naruto Uzumaki!");
+        assertTrue(response.jutsus().containsKey("Rasengan"), "Deve retornar o Jutsu Rasengan!");
+        assertEquals(65, response.jutsus().get("Rasengan").getDano(), "Deve retornar 65 de dano!");
+        assertEquals(40, response.jutsus().get("Rasengan").getConsumoDeChakra(), "Deve retornar 40 de consumo de chakra!");
 
         verify(personagemRepository).findById(id);
     }
-
 
     @Test
     @DisplayName("Deve lançar exceção 404 ao buscar personagem inexistente por id!")
@@ -362,7 +401,5 @@ public class PersonagemServiceTest {
         verify(personagemRepository).findById(id);
         verify(personagemRepository, never()).save(any());
     }
-
-
 
 }

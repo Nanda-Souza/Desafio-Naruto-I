@@ -43,52 +43,18 @@ public class PersonagemController {
         return ResponseEntity.ok(personagemService.buscarPersonagemPorId(id));
     }
 
-    @Operation(description = "Cria um ninja de ninjutsu")
-    @ApiResponse(responseCode = "201", description = "Retorna o ninja de ninjutsu criado")
-    @PostMapping("/ninja_de_ninjutsu")
-    public ResponseEntity<PersonagemResponse> salvarNinjaDeNinjutsu(
-            @RequestBody @Valid PersonagemRequest personagemRequest
-    ){
-        PersonagemResponse salvo = personagemService.salvarNinjaDeNinjutsu(personagemRequest);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(salvo.id())
-                .toUri();
-
-        return ResponseEntity.created(location).body(salvo);
-    }
-
-    @Operation(description = "Cria um ninja de taijutsu")
-    @ApiResponse(responseCode = "201", description = "Retorna o ninja de taijutsu criado")
-    @PostMapping("/ninja_de_taijutsu")
-    public ResponseEntity<PersonagemResponse> salvarNinjaDeTaijutsu(
-            @RequestBody @Valid PersonagemRequest personagemRequest
-    ){
-        PersonagemResponse salvo = personagemService.salvarNinjaDeTaijutsu(personagemRequest);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(salvo.id())
-                .toUri();
-
-        return ResponseEntity.created(location).body(salvo);
-    }
-
-    @Operation(description = "Cria um ninja de genjutsu")
-    @ApiResponse(responseCode = "201", description = "Retorna o ninja de genjutsu criado")
-    @PostMapping("/ninja_de_genjutsu")
-    public ResponseEntity<PersonagemResponse> salvarNinjaDeGejutsu(
+    @Operation(description = "Cria um personagem ninja")
+    @ApiResponse(responseCode = "201", description = "Retorna o personagem ninja criado")
+    @PostMapping()
+    public ResponseEntity<PersonagemResponse> salvarPersonagem(
             @RequestBody @Valid PersonagemRequest personagemRequest
     ){
 
-        PersonagemResponse salvo = personagemService.salvarNinjaDeGenjutsu(personagemRequest);
+        PersonagemResponse salvo = personagemService.salvarPersonagem(personagemRequest);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
+                .fromCurrentContextPath()
+                .path("personagem/{id}")
                 .buildAndExpand(salvo.id())
                 .toUri();
 
