@@ -4,11 +4,9 @@ import com.db.naruto.domain.entity.Jutsu;
 
 import java.util.Map;
 
-public record PersonagemResponse(
+public record JutsuRemoveResponse(
         Long id,
         String nome,
-        int vida,
-        int chakra,
         Map<String, Jutsu> jutsus
 ) {
 }

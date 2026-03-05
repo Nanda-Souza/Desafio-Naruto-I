@@ -44,7 +44,7 @@ public class PersonagemService {
         personagemRequest.jutsus().forEach((nomeJutsu, jutsuRequest) ->
                 ninja.getJutsus().put(
                         nomeJutsu,
-                        new Jutsus(
+                        new Jutsu(
                                 jutsuRequest.dano(),
                                 jutsuRequest.consumoDeChakra()
                         )
@@ -98,7 +98,7 @@ public class PersonagemService {
 
                 personagem.getJutsus().put(
                         nomeJutsu,
-                        new Jutsus(
+                        new Jutsu(
                                 jutsuRequest.dano(),
                                 jutsuRequest.consumoDeChakra()
                         )

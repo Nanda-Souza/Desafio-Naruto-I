@@ -53,7 +53,7 @@ public class PersonagemServiceTest {
         request.jutsus().forEach((nomeJutsu, jutsuRequest) ->
                 ninjaSalvo.getJutsus().put(
                         nomeJutsu,
-                        new Jutsus(
+                        new Jutsu(
                                 jutsuRequest.dano(),
                                 jutsuRequest.consumoDeChakra()
                         )
@@ -98,7 +98,7 @@ public class PersonagemServiceTest {
         request.jutsus().forEach((nomeJutsu, jutsuRequest) ->
                 ninjaSalvo.getJutsus().put(
                         nomeJutsu,
-                        new Jutsus(
+                        new Jutsu(
                                 jutsuRequest.dano(),
                                 jutsuRequest.consumoDeChakra()
                         )
@@ -144,7 +144,7 @@ public class PersonagemServiceTest {
         request.jutsus().forEach((nomeJutsu, jutsuRequest) ->
                 ninjaSalvo.getJutsus().put(
                         nomeJutsu,
-                        new Jutsus(
+                        new Jutsu(
                                 jutsuRequest.dano(),
                                 jutsuRequest.consumoDeChakra()
                         )
@@ -169,8 +169,8 @@ public class PersonagemServiceTest {
     @DisplayName("Deve listar todos os personagens cadastrados!")
     void deveListarTodosOsPersonagensCadastrados(){
 
-        Map<String, Jutsus> jutsusPersonagem1 = new HashMap<>();
-        jutsusPersonagem1.put("Rasengan", new Jutsus(65, 40));
+        Map<String, Jutsu> jutsusPersonagem1 = new HashMap<>();
+        jutsusPersonagem1.put("Rasengan", new Jutsu(65, 40));
 
         NinjaDeNinjutsu personagem1 = new NinjaDeNinjutsu(
                 "Naruto Uzumaki",
@@ -179,8 +179,8 @@ public class PersonagemServiceTest {
 
         personagem1.setJutsus(jutsusPersonagem1);
 
-        Map<String, Jutsus> jutsusPersonagem2 = new HashMap<>();
-        jutsusPersonagem2.put("Oito Trigramas: Palma Rotativa", new Jutsus(35, 10));
+        Map<String, Jutsu> jutsusPersonagem2 = new HashMap<>();
+        jutsusPersonagem2.put("Oito Trigramas: Palma Rotativa", new Jutsu(35, 10));
 
         NinjaDeTaijutsu personagem2 = new NinjaDeTaijutsu(
                 "Neji Hyuuga",
@@ -189,8 +189,8 @@ public class PersonagemServiceTest {
 
         personagem2.setJutsus(jutsusPersonagem2);
 
-        Map<String, Jutsus> jutsusPersonagem3 = new HashMap<>();
-        jutsusPersonagem3.put("Técnica da Captura pela Sombra", new Jutsus(25, 10));
+        Map<String, Jutsu> jutsusPersonagem3 = new HashMap<>();
+        jutsusPersonagem3.put("Técnica da Captura pela Sombra", new Jutsu(25, 10));
 
         NinjaDeGenjutsu personagem3 = new NinjaDeGenjutsu(
                 "Shikamaru Nara",
@@ -235,8 +235,8 @@ public class PersonagemServiceTest {
 
         Long id = 1L;
 
-        Map<String, Jutsus> jutsusPersonagem = new HashMap<>();
-        jutsusPersonagem.put("Rasengan", new Jutsus(65, 40));
+        Map<String, Jutsu> jutsusPersonagem = new HashMap<>();
+        jutsusPersonagem.put("Rasengan", new Jutsu(65, 40));
 
         NinjaDeNinjutsu personagem = new NinjaDeNinjutsu(
                 "Naruto Uzumaki",
@@ -283,8 +283,8 @@ public class PersonagemServiceTest {
 
         Long id = 1L;
 
-        Map<String, Jutsus> jutsusPersonagem = new HashMap<>();
-        jutsusPersonagem.put("Rasengan", new Jutsus(6, 4));
+        Map<String, Jutsu> jutsusPersonagem = new HashMap<>();
+        jutsusPersonagem.put("Rasengan", new Jutsu(6, 4));
 
         NinjaDeNinjutsu personagem = new NinjaDeNinjutsu(
                 "Naruto",
@@ -360,8 +360,8 @@ public class PersonagemServiceTest {
     void deveRetornarPersonagemPorIdComSucesso() {
         Long id = 1L;
 
-        Map<String, Jutsus> jutsusPersonagem = new HashMap<>();
-        jutsusPersonagem.put("Rasengan", new Jutsus(65, 40));
+        Map<String, Jutsu> jutsusPersonagem = new HashMap<>();
+        jutsusPersonagem.put("Rasengan", new Jutsu(65, 40));
 
         NinjaDeNinjutsu personagem = new NinjaDeNinjutsu(
                 "Naruto Uzumaki",

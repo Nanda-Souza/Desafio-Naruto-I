@@ -28,12 +28,16 @@ public class Personagem {
     @CollectionTable(name = "personagem_jutsus",
             joinColumns = @JoinColumn(name = "personagem_id"))
     @MapKeyColumn(name = "nome_jutsu")
-    private Map<String, Jutsus> jutsus = new HashMap<>();
+    private Map<String, Jutsu> jutsus = new HashMap<>();
 
     public Personagem(String nome, int vida ) {
         this.nome = nome;
         this.vida = vida;
         this.chakra = 100;
+    }
+
+    public void removerJutsu(String nomeJutsu) {
+        this.jutsus.remove(nomeJutsu);
     }
 
 }

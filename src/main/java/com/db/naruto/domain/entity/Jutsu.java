@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class Jutsus {
+public class Jutsu {
 
     private int dano;
     private int consumoDeChakra;
