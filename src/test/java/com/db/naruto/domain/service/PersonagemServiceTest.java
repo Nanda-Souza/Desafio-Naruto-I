@@ -33,7 +33,6 @@ public class PersonagemServiceTest {
     @DisplayName("Deve salvar e retornar o Ninja de Ninjutsu com sucesso!")
     void deveSalvarNinjaDeNinjutsuComSucesso(){
 
-
         Map<String, JutsuRequest> jutsus = new HashMap<>();
         jutsus.put("Rasengan", new JutsuRequest(65, 40));
 
@@ -390,13 +389,13 @@ public class PersonagemServiceTest {
 
         when(personagemRepository.findById(id)).thenReturn(Optional.empty());
 
-        ResponseStatusException ex = assertThrows(
+        ResponseStatusException exception = assertThrows(
                 ResponseStatusException.class,
                 () -> personagemService.buscarPersonagemPorId(id)
         );
 
-        assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode(), "Deve retornar status code 404!");
-        assertEquals("Personagem com Id 1 não encontrado!", ex.getReason(),"Deve retornar mensagem de não encontrado!");
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode(), "Deve retornar status code 404!");
+        assertEquals("Personagem com Id 1 não encontrado!", exception.getReason(),"Deve retornar mensagem de não encontrado!");
 
         verify(personagemRepository).findById(id);
         verify(personagemRepository, never()).save(any());

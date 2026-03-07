@@ -36,8 +36,4 @@ public class Personagem {
         this.chakra = 100;
     }
 
-    public void removerJutsu(String nomeJutsu) {
-        this.jutsus.remove(nomeJutsu);
-    }
-
 }

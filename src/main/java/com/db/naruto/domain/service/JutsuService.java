@@ -2,7 +2,6 @@ package com.db.naruto.domain.service;
 
 import com.db.naruto.domain.dto.JutsuRemoveRequest;
 import com.db.naruto.domain.dto.JutsuRemoveResponse;
-import com.db.naruto.domain.dto.PersonagemResponse;
 import com.db.naruto.domain.entity.Personagem;
 import com.db.naruto.domain.repository.PersonagemRepository;
 import org.springframework.http.HttpStatus;
@@ -23,14 +22,14 @@ public class JutsuService {
                                 "Personagem com Id " + id + " não foi encontrado!")
                 );
 
-        if (personagem.getJutsus().size() == 1) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-                    "Não foi possível remover o jutsu pois o ninja deve possuir ao menos um jutsu!");
-        }
-
         if (!personagem.getJutsus().containsKey(jutsuRequest.nomeJutsu())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Jutsu não encontrado!");
+        }
+
+        if (personagem.getJutsus().size() == 1) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "Não foi possível remover o jutsu pois o ninja deve possuir ao menos um jutsu!");
         }
 
         personagem.getJutsus().remove(jutsuRequest.nomeJutsu());
@@ -42,10 +41,6 @@ public class JutsuService {
                 ninjaSalvo.getNome(),
                 ninjaSalvo.getJutsus()
         );
-
-
-
-
     }
 
 }
