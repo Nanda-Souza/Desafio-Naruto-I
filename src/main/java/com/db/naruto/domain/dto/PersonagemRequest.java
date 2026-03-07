@@ -4,7 +4,6 @@ import com.db.naruto.domain.entity.TipoNinja;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
-import java.util.List;
 import java.util.Map;
 
 public record PersonagemRequest(
