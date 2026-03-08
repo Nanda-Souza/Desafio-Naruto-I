@@ -50,6 +50,24 @@ public class Personagem {
         return false;
     }
 
+    public boolean conseguiuDesviar(){
+
+        if (Math.random() < 0.20){
+            return true;
+        }
+
+        return false;
+    }
+
+    public void levarDano(int dano) {
+        this.vida -= dano;
+    }
+
+    public void gastarChakra(int custo) {
+        this.chakra -= custo;
+    }
+
+
 
 
 

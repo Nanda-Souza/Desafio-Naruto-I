@@ -3,6 +3,7 @@ package com.db.naruto.domain.service;
 import com.db.naruto.domain.dto.BatalhaRequest;
 import com.db.naruto.domain.dto.BatalhaResponse;
 import com.db.naruto.domain.entity.Jutsu;
+import com.db.naruto.domain.entity.Ninja;
 import com.db.naruto.domain.entity.Personagem;
 import com.db.naruto.domain.repository.PersonagemRepository;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ public class BatalhaService {
         Long idAtacante = batalhaRequest.idAtacante();
         Long idDefensor = batalhaRequest.idDefensor();
         String resultado = "";
+        boolean desviou = false;
 
 
         Personagem atacante = personagemRepository.findById(idAtacante)
@@ -58,12 +60,32 @@ public class BatalhaService {
             return new BatalhaResponse(resultado);
         }
 
+        if (atacante instanceof Ninja ninja) {
+            ninja.usarJutsu();
+        }
 
+        if (defensor.conseguiuDesviar()){
+            desviou = true;
+            if (defensor instanceof Ninja ninja) {
+                ninja.desviar();
+            }
+        }
 
+        atacante.gastarChakra(jutsu.getConsumoDeChakra());
+        personagemRepository.save(atacante);
 
-        System.out.println("Atacante: " + atacante.getNome());
-        System.out.println("Foi Derrotado?: " + atacante.foiDerrotado());
-        System.out.println("Pode Atacar?: " + atacante.podeAtacar());
+        if (desviou){
+            resultado = defensor.getNome() + " se desviou do jutsu " + nomeJutsu + "!";
+            return new BatalhaResponse(resultado);
+        }
+
+        defensor.levarDano(jutsu.getDano());
+        personagemRepository.save(defensor);
+
+        if (defensor.foiDerrotado()){
+            resultado = defensor.getNome() + " foi recebeu o jutsu " + nomeJutsu + " e foi derrotado(a) por " + atacante.getNome() + "!";
+            return new BatalhaResponse(resultado);
+        }
 
         resultado = atacante.getNome() + " está atacando " + defensor.getNome() + " com " + nomeJutsu;
 
