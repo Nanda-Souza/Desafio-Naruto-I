@@ -87,7 +87,7 @@ public class BatalhaService {
             return new BatalhaResponse(resultado);
         }
 
-        resultado = atacante.getNome() + " está atacando " + defensor.getNome() + " com " + nomeJutsu;
+        resultado = atacante.getNome() + " está atacando " + defensor.getNome() + " com " + nomeJutsu + "!";
 
         return new BatalhaResponse(resultado);
 
