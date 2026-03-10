@@ -36,4 +36,39 @@ public class Personagem {
         this.chakra = 100;
     }
 
+    public boolean foiDerrotado(){
+        return chakra <= 0 || vida <= 0;
+    }
+
+
+    public boolean podeAtacar() {
+        for (Jutsu j : jutsus.values()) {
+            if (j.getConsumoDeChakra() <= this.chakra) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean conseguiuDesviar(){
+
+        if (Math.random() < 0.20){
+            return true;
+        }
+
+        return false;
+    }
+
+    public void levarDano(int dano) {
+        this.vida -= dano;
+    }
+
+    public void gastarChakra(int custo) {
+        this.chakra -= custo;
+    }
+
+
+
+
+
 }

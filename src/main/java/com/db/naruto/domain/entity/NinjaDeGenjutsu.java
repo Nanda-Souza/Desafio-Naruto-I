@@ -20,11 +20,11 @@ public class NinjaDeGenjutsu extends Personagem implements Ninja{
 
     @Override
     public void usarJutsu() {
-        System.out.println("O personagem está atacando com um golpe de Genjutsu!");
+        System.out.println(getNome() + " está atacando com um golpe de Genjutsu!");
     }
 
     @Override
     public void desviar() {
-        System.out.println("O personagem está se desviando usando um golpe de Genjutsu!");
+        System.out.println(getNome() + " está se desviando de um ataque recebido com um golpe de Genjutsu!");
     }
 }
